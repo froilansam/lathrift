@@ -187,7 +187,7 @@ function StatCard({
 function StatusBadge({
   status,
 }: {
-  status: "pending" | "paid" | "processing" | "shipped" | "delivered" | "cancelled";
+  status: "pending" | "paid" | "processing" | "shipped" | "delivered" | "cancelled" | "refunded";
 }) {
   const variants: Record<string, "default" | "success" | "warning" | "destructive" | "secondary"> = {
     pending: "warning",
@@ -196,6 +196,7 @@ function StatusBadge({
     shipped: "default",
     delivered: "success",
     cancelled: "destructive",
+    refunded: "secondary",
   };
 
   return (

@@ -23,7 +23,8 @@ type OrderStatus =
   | "processing"
   | "shipped"
   | "delivered"
-  | "cancelled";
+  | "cancelled"
+  | "refunded";
 
 const STATUS_OPTIONS: OrderStatus[] = [
   "pending",
@@ -32,6 +33,7 @@ const STATUS_OPTIONS: OrderStatus[] = [
   "shipped",
   "delivered",
   "cancelled",
+  "refunded",
 ];
 
 type CourierType =

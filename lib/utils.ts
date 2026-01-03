@@ -53,6 +53,7 @@ export const STATUS_LABELS: Record<string, string> = {
   shipped: "Shipped",
   delivered: "Delivered",
   cancelled: "Cancelled",
+  refunded: "Refunded",
 };
 
 export const SHIPPING_LABELS: Record<string, string> = {
