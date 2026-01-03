@@ -11,7 +11,8 @@ export const list = query({
         v.literal("processing"),
         v.literal("shipped"),
         v.literal("delivered"),
-        v.literal("cancelled")
+        v.literal("cancelled"),
+        v.literal("refunded")
       )
     ),
     customerId: v.optional(v.id("customers")),
@@ -122,7 +123,8 @@ export const updateStatus = mutation({
       v.literal("processing"),
       v.literal("shipped"),
       v.literal("delivered"),
-      v.literal("cancelled")
+      v.literal("cancelled"),
+      v.literal("refunded")
     ),
   },
   handler: async (ctx, args) => {
@@ -139,7 +141,7 @@ export const updateStatus = mutation({
 
     await ctx.db.patch(args.id, updates);
 
-    // Send email notification (except pending and cancelled)
+    // Send email notification (except pending, cancelled)
     if (args.status !== "pending" && args.status !== "cancelled") {
       const customer = await ctx.db.get(order.customerId);
       if (customer?.email) {
@@ -165,20 +167,47 @@ export const updateStatus = mutation({
 export const updatePayment = mutation({
   args: {
     id: v.id("orders"),
-    paymentId: v.string(),
+    paymentId: v.optional(v.string()),
     status: v.union(v.literal("paid"), v.literal("pending")),
   },
   handler: async (ctx, args) => {
+    const order = await ctx.db.get(args.id);
+    if (!order) throw new Error("Order not found");
+
     const updates: Record<string, unknown> = {
-      paymentId: args.paymentId,
       status: args.status,
     };
+
+    if (args.paymentId) {
+      updates.paymentId = args.paymentId;
+    }
 
     if (args.status === "paid") {
       updates.paidAt = Date.now();
     }
 
     await ctx.db.patch(args.id, updates);
+
+    // Send email notification when marked as paid
+    if (args.status === "paid") {
+      const customer = await ctx.db.get(order.customerId);
+      if (customer?.email) {
+        await ctx.scheduler.runAfter(0, internal.email.sendOrderStatusEmail, {
+          to: customer.email,
+          status: "paid",
+          orderId: args.id,
+          customerName: customer.name,
+          items: order.items.map((item) => ({
+            name: item.name,
+            quantity: item.quantity,
+            price: item.price,
+          })),
+          total: order.total,
+          trackingNumber: order.trackingNumber,
+          courier: order.courier,
+        });
+      }
+    }
   },
 });
 

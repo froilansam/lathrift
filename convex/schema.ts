@@ -80,7 +80,8 @@ export default defineSchema({
       v.literal("processing"),
       v.literal("shipped"),
       v.literal("delivered"),
-      v.literal("cancelled")
+      v.literal("cancelled"),
+      v.literal("refunded")
     ),
     paymentMethod: v.union(
       v.literal("qrph"),

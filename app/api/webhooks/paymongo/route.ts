@@ -19,6 +19,45 @@ function verifySignature(payload: string, signature: string, secret: string): bo
   return sig === expectedSig;
 }
 
+// Extract order ID from various event structures
+function extractOrderId(event: any): string | null {
+  const data = event?.attributes?.data;
+
+  // From checkout session
+  if (data?.attributes?.reference_number) {
+    return data.attributes.reference_number;
+  }
+
+  // From payment metadata
+  if (data?.attributes?.metadata?.order_id) {
+    return data.attributes.metadata.order_id;
+  }
+
+  // From direct attributes
+  if (event?.attributes?.reference_number) {
+    return event.attributes.reference_number;
+  }
+
+  return null;
+}
+
+// Extract payment ID
+function extractPaymentId(event: any): string | null {
+  const data = event?.attributes?.data;
+
+  // From checkout session payments array
+  if (data?.attributes?.payments?.[0]?.id) {
+    return data.attributes.payments[0].id;
+  }
+
+  // From direct data id
+  if (data?.id) {
+    return data.id;
+  }
+
+  return null;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const rawBody = await request.text();
@@ -40,46 +79,127 @@ export async function POST(request: NextRequest) {
 
     console.log("PayMongo webhook received:", eventType);
 
-    // Handle checkout.session.payment.paid event
-    if (eventType === "checkout_session.payment.paid") {
-      const checkoutSession = event.attributes.data;
-      const referenceNumber = checkoutSession?.attributes?.reference_number;
-      const paymentId = checkoutSession?.attributes?.payments?.[0]?.id || checkoutSession.id;
+    const orderId = extractOrderId(event);
+    const paymentId = extractPaymentId(event);
 
-      console.log("Payment successful for order:", referenceNumber);
+    switch (eventType) {
+      // ==========================================
+      // CHECKOUT SESSION EVENTS
+      // ==========================================
+      case "checkout_session.payment.paid": {
+        console.log("Checkout payment successful for order:", orderId);
 
-      if (referenceNumber) {
-        try {
-          await convex.mutation(api.orders.updatePayment, {
-            id: referenceNumber as Id<"orders">,
-            paymentId: paymentId,
-            status: "paid",
-          });
-          console.log(`Order ${referenceNumber} marked as paid`);
-        } catch (error) {
-          console.error("Failed to update order:", error);
+        if (orderId) {
+          try {
+            await convex.mutation(api.orders.updatePayment, {
+              id: orderId as Id<"orders">,
+              paymentId: paymentId || undefined,
+              status: "paid",
+            });
+            console.log(`Order ${orderId} marked as paid`);
+          } catch (error) {
+            console.error("Failed to update order:", error);
+          }
         }
+        break;
       }
-    }
 
-    // Handle payment.paid event (direct payments)
-    if (eventType === "payment.paid") {
-      const payment = event.attributes.data;
-      const metadata = payment?.attributes?.metadata;
-      const orderId = metadata?.order_id;
+      // ==========================================
+      // QRPH EVENTS
+      // ==========================================
+      case "qrph.expired": {
+        console.log("QR payment expired for order:", orderId);
 
-      if (orderId) {
-        try {
-          await convex.mutation(api.orders.updatePayment, {
-            id: orderId as Id<"orders">,
-            paymentId: payment.id,
-            status: "paid",
-          });
-          console.log(`Order ${orderId} marked as paid via payment.paid`);
-        } catch (error) {
-          console.error("Failed to update order:", error);
+        if (orderId) {
+          try {
+            // Cancel the order since QR payment expired
+            await convex.mutation(api.orders.cancel, {
+              id: orderId as Id<"orders">,
+            });
+            console.log(`Order ${orderId} cancelled due to QR expiry`);
+          } catch (error) {
+            console.error("Failed to cancel order:", error);
+          }
         }
+        break;
       }
+
+      // ==========================================
+      // PAYMENT EVENTS
+      // ==========================================
+      case "payment.paid": {
+        console.log("Payment successful for order:", orderId);
+
+        if (orderId) {
+          try {
+            await convex.mutation(api.orders.updatePayment, {
+              id: orderId as Id<"orders">,
+              paymentId: paymentId || undefined,
+              status: "paid",
+            });
+            console.log(`Order ${orderId} marked as paid via payment.paid`);
+          } catch (error) {
+            console.error("Failed to update order:", error);
+          }
+        }
+        break;
+      }
+
+      case "payment.failed": {
+        console.log("Payment failed for order:", orderId);
+
+        if (orderId) {
+          try {
+            // Update order status to reflect failed payment
+            await convex.mutation(api.orders.updateStatus, {
+              id: orderId as Id<"orders">,
+              status: "cancelled",
+            });
+            console.log(`Order ${orderId} cancelled due to payment failure`);
+          } catch (error) {
+            console.error("Failed to update order:", error);
+          }
+        }
+        break;
+      }
+
+      case "payment.refunded": {
+        console.log("Payment refunded for order:", orderId);
+
+        if (orderId) {
+          try {
+            await convex.mutation(api.orders.updateStatus, {
+              id: orderId as Id<"orders">,
+              status: "refunded",
+            });
+            console.log(`Order ${orderId} marked as refunded`);
+          } catch (error) {
+            console.error("Failed to update order:", error);
+          }
+        }
+        break;
+      }
+
+      case "payment.refund.updated": {
+        const refundStatus = event?.attributes?.data?.attributes?.status;
+        console.log("Refund updated for order:", orderId, "Status:", refundStatus);
+
+        if (orderId && refundStatus === "succeeded") {
+          try {
+            await convex.mutation(api.orders.updateStatus, {
+              id: orderId as Id<"orders">,
+              status: "refunded",
+            });
+            console.log(`Order ${orderId} refund completed`);
+          } catch (error) {
+            console.error("Failed to update order:", error);
+          }
+        }
+        break;
+      }
+
+      default:
+        console.log("Unhandled event type:", eventType);
     }
 
     return NextResponse.json({ received: true });
