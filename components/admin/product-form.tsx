@@ -265,7 +265,7 @@ export function ProductForm({ productId, onClose }: ProductFormProps) {
             <select
               value={formData.condition}
               onChange={(e) =>
-                setFormData({ ...formData, condition: e.target.value })
+                setFormData({ ...formData, condition: e.target.value as "new" | "like-new" | "good" | "fair" })
               }
               className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             >
@@ -285,7 +285,7 @@ export function ProductForm({ productId, onClose }: ProductFormProps) {
               onChange={(e) =>
                 setFormData({
                   ...formData,
-                  type: e.target.value,
+                  type: e.target.value as "unique" | "stock",
                   quantity: e.target.value === "unique" ? "1" : formData.quantity,
                 })
               }
@@ -330,7 +330,7 @@ export function ProductForm({ productId, onClose }: ProductFormProps) {
             <select
               value={formData.status}
               onChange={(e) =>
-                setFormData({ ...formData, status: e.target.value })
+                setFormData({ ...formData, status: e.target.value as "active" | "sold" | "hidden" })
               }
               className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             >

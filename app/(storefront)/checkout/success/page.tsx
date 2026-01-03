@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAction, useMutation, useQuery } from "convex/react";
@@ -9,7 +9,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 
-export default function CheckoutSuccessPage() {
+function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("order") as Id<"orders"> | null;
   const isTikTok = searchParams.get("tiktok") === "true";
@@ -128,5 +128,18 @@ export default function CheckoutSuccessPage() {
         </Button>
       </div>
     </div>
+  );
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="mx-auto max-w-lg px-4 py-24 text-center sm:px-6">
+        <div className="h-12 w-12 mx-auto mb-4 animate-spin rounded-full border-4 border-accent border-t-transparent" />
+        <h1 className="text-xl font-bold">Loading...</h1>
+      </div>
+    }>
+      <CheckoutSuccessContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { motion } from "framer-motion";
 import { useQuery } from "convex/react";
 import { useSearchParams } from "next/navigation";
@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 
 type SortOption = "newest" | "price-low" | "price-high";
 
-export default function ShopPage() {
+function ShopContent() {
   const searchParams = useSearchParams();
   const categorySlug = searchParams.get("category");
   const featuredOnly = searchParams.get("featured") === "true";
@@ -275,6 +275,33 @@ export default function ShopPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function ShopLoading() {
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="animate-pulse">
+        <div className="h-8 w-32 bg-secondary rounded mb-8" />
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6">
+          {[...Array(8)].map((_, i) => (
+            <div key={i}>
+              <div className="aspect-[3/4] rounded-lg bg-secondary" />
+              <div className="mt-3 h-4 w-3/4 rounded bg-secondary" />
+              <div className="mt-2 h-5 w-1/2 rounded bg-secondary" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<ShopLoading />}>
+      <ShopContent />
+    </Suspense>
   );
 }
 

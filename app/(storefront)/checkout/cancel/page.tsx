@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useMutation } from "convex/react";
@@ -9,7 +9,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 
-export default function CheckoutCancelPage() {
+function CheckoutCancelContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("order") as Id<"orders"> | null;
 
@@ -55,5 +55,17 @@ export default function CheckoutCancelPage() {
         </Button>
       </div>
     </div>
+  );
+}
+
+export default function CheckoutCancelPage() {
+  return (
+    <Suspense fallback={
+      <div className="mx-auto max-w-lg px-4 py-24 text-center sm:px-6">
+        <div className="h-12 w-12 mx-auto mb-4 animate-spin rounded-full border-4 border-accent border-t-transparent" />
+      </div>
+    }>
+      <CheckoutCancelContent />
+    </Suspense>
   );
 }

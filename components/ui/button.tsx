@@ -51,12 +51,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     // If asChild, clone the child element with button styles
     if (asChild && children) {
-      const child = children as ReactElement;
+      const child = children as ReactElement<{ className?: string }>;
       return cloneElement(child, {
         className: cn(combinedClassName, child.props?.className),
         ref,
-        ...props,
-      });
+        ...(props as object),
+      } as object);
     }
 
     return (
