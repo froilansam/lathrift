@@ -59,7 +59,7 @@ export const STATUS_LABELS: Record<string, string> = {
 export const SHIPPING_LABELS: Record<string, string> = {
   gogo: "GoGo Xpress",
   lalamove: "Lalamove (Same Day)",
-  tiktok: "TikTok Shop",
+  tiktok: "TikTok Delivery",
   flat: "Standard Delivery",
 };
 

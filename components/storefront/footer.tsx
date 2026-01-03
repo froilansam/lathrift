@@ -54,24 +54,35 @@ export function Footer() {
             <ul className="space-y-3 text-sm text-primary-foreground/70">
               <li>
                 <a
-                  href="https://www.tiktok.com/@lathrift"
+                  href="https://www.tiktok.com/@l.athrift"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-accent transition-colors flex items-center gap-2"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-                  TikTok Shop
+                  TikTok
                 </a>
               </li>
               <li>
                 <a
-                  href="https://www.instagram.com/lathrift"
+                  href="https://www.instagram.com/l.athrift"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-accent transition-colors flex items-center gap-2"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-accent" />
                   Instagram
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.facebook.com/l.athrift"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-accent transition-colors flex items-center gap-2"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                  Facebook
                 </a>
               </li>
             </ul>

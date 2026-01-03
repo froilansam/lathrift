@@ -89,22 +89,22 @@ function CheckoutSuccessContent() {
           </div>
           <p className="text-sm text-muted mb-4">
             To get the cheapest shipping rate, please order our shipping placeholder
-            item on TikTok Shop. You&apos;ll only pay for the delivery fee there.
+            item on TikTok. You&apos;ll only pay for the delivery fee there.
           </p>
           <ol className="text-sm text-muted space-y-2 list-decimal list-inside mb-4">
-            <li>Click the button below to go to TikTok Shop</li>
+            <li>Click the button below to go to our TikTok</li>
             <li>Add the &quot;Shipping Placeholder&quot; item to cart</li>
             <li>Use your order ID as reference: <span className="font-mono font-bold">{orderId?.slice(-8).toUpperCase()}</span></li>
             <li>Complete checkout on TikTok</li>
           </ol>
           <Button className="w-full" asChild>
             <a
-              href={process.env.NEXT_PUBLIC_TIKTOK_SHOP_URL || "https://tiktok.com/@lathrift"}
+              href="https://tiktok.com/@l.athrift"
               target="_blank"
               rel="noopener noreferrer"
             >
               <ExternalLink className="h-4 w-4 mr-2" />
-              Go to TikTok Shop
+              Go to TikTok
             </a>
           </Button>
         </div>

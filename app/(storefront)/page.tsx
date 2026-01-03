@@ -168,12 +168,12 @@ export default function HomePage() {
           <div className="rounded-2xl bg-primary p-8 sm:p-12 text-primary-foreground">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
               <div>
-                <p className="text-sm text-accent font-medium mb-2">Cheaper Shipping Available</p>
+                <p className="text-sm text-accent font-medium mb-2">New Drops Every Week</p>
                 <h2 className="text-2xl sm:text-3xl font-bold">
-                  Shop on TikTok
+                  Watch Us on TikTok
                 </h2>
                 <p className="mt-2 text-primary-foreground/70">
-                  Get first dibs on drops + save on shipping
+                  See our latest finds + get styling inspo
                 </p>
               </div>
               <Button
@@ -182,11 +182,11 @@ export default function HomePage() {
                 asChild
               >
                 <a
-                  href={process.env.NEXT_PUBLIC_TIKTOK_SHOP_URL || "https://tiktok.com/@lathrift"}
+                  href="https://tiktok.com/@l.athrift"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  @lathrift
+                  @l.athrift
                 </a>
               </Button>
             </div>

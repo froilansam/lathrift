@@ -380,7 +380,7 @@ export default function CheckoutPage() {
                 </div>
               </button>
 
-              {/* TikTok Shop */}
+              {/* TikTok Delivery */}
               <button
                 onClick={() => setShippingMethod("tiktok")}
                 className={`w-full rounded-lg border-2 p-4 text-left transition-colors ${
@@ -394,7 +394,7 @@ export default function CheckoutPage() {
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium">TikTok Shop Shipping</span>
+                        <span className="font-medium">TikTok Delivery</span>
                         <span className="text-xs bg-accent text-accent-foreground px-2 py-0.5 rounded-full">
                           Cheapest
                         </span>
@@ -402,7 +402,7 @@ export default function CheckoutPage() {
                       <span className="font-bold text-success">Free*</span>
                     </div>
                     <p className="text-sm text-muted mt-1">
-                      Pay here, then complete shipping via TikTok Shop
+                      Pay here, then complete shipping via TikTok
                     </p>
                   </div>
                 </div>
@@ -441,7 +441,7 @@ export default function CheckoutPage() {
 
               {shippingMethod === "tiktok" && (
                 <p className="text-xs text-muted text-center">
-                  *After payment, you&apos;ll order shipping via TikTok Shop
+                  *After payment, you&apos;ll order shipping via TikTok
                 </p>
               )}
             </motion.div>
@@ -507,7 +507,7 @@ export default function CheckoutPage() {
               </div>
               {shippingMethod === "tiktok" && (
                 <p className="text-xs text-muted">
-                  + shipping via TikTok Shop
+                  + shipping via TikTok
                 </p>
               )}
             </div>
