@@ -1,13 +1,42 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery, useMutation, useAction } from "convex/react";
 import Image from "next/image";
-import { Upload, X, Plus } from "lucide-react";
+import heic2any from "heic2any";
+import { Upload, X, Plus, Sparkles } from "lucide-react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
+// Helper to convert HEIC to JPEG
+async function convertHeicToJpeg(file: File): Promise<File> {
+  const isHeic = file.type === "image/heic" ||
+                 file.type === "image/heif" ||
+                 file.name.toLowerCase().endsWith(".heic") ||
+                 file.name.toLowerCase().endsWith(".heif");
+
+  if (!isHeic) return file;
+
+  try {
+    const blob = await heic2any({
+      blob: file,
+      toType: "image/jpeg",
+      quality: 0.9,
+    });
+
+    // heic2any can return an array of blobs for multi-image HEIC files
+    const resultBlob = Array.isArray(blob) ? blob[0] : blob;
+
+    // Create a new file with .jpg extension
+    const newFileName = file.name.replace(/\.(heic|heif)$/i, ".jpg");
+    return new File([resultBlob], newFileName, { type: "image/jpeg" });
+  } catch (error) {
+    console.error("HEIC conversion error:", error);
+    throw new Error("Failed to convert HEIC image");
+  }
+}
 
 interface ProductFormProps {
   productId?: Id<"products"> | null;
@@ -24,10 +53,12 @@ export function ProductForm({ productId, onClose }: ProductFormProps) {
   const createProduct = useMutation(api.products.create);
   const updateProduct = useMutation(api.products.update);
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
+  const analyzeImages = useAction(api.ai.analyzeProductImages);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [images, setImages] = useState<string[]>(product?.images ?? []);
   const [uploading, setUploading] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
@@ -68,7 +99,10 @@ export function ProductForm({ productId, onClose }: ProductFormProps) {
     try {
       const newImages: string[] = [];
 
-      for (const file of Array.from(files)) {
+      for (const originalFile of Array.from(files)) {
+        // Convert HEIC to JPEG if needed
+        const file = await convertHeicToJpeg(originalFile);
+
         const uploadUrl = await generateUploadUrl();
         const result = await fetch(uploadUrl, {
           method: "POST",
@@ -85,7 +119,7 @@ export function ProductForm({ productId, onClose }: ProductFormProps) {
       setImages((prev) => [...prev, ...newImages]);
     } catch (error) {
       console.error("Upload error:", error);
-      alert("Failed to upload image");
+      alert("Failed to upload image. If using iPhone photos, please try again.");
     } finally {
       setUploading(false);
     }
@@ -93,6 +127,49 @@ export function ProductForm({ productId, onClose }: ProductFormProps) {
 
   const removeImage = (index: number) => {
     setImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleAIAnalyze = async () => {
+    if (images.length === 0 || !categories) return;
+
+    setIsAnalyzing(true);
+    try {
+      // Prepare categories for the AI
+      const categoryData = categories.map((c) => ({
+        id: c._id,
+        name: c.name,
+      }));
+
+      const analysis = await analyzeImages({
+        storageIds: images,
+        existingCategories: categoryData,
+      });
+
+      // Find matching category ID (case-insensitive)
+      const matchedCategory = categories.find(
+        (c) =>
+          c.name.toLowerCase() === analysis.suggestedCategory.toLowerCase()
+      );
+
+      // Auto-fill form with AI suggestions
+      setFormData((prev) => ({
+        ...prev,
+        name: analysis.suggestedName || prev.name,
+        description: analysis.description || prev.description,
+        brand: analysis.brand || prev.brand,
+        categoryId: matchedCategory?._id || prev.categoryId,
+        condition: analysis.condition || prev.condition,
+      }));
+    } catch (error) {
+      console.error("AI analysis failed:", error);
+      alert(
+        error instanceof Error
+          ? error.message
+          : "AI analysis failed. Please try again or fill in manually."
+      );
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -183,11 +260,34 @@ export function ProductForm({ productId, onClose }: ProductFormProps) {
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*"
+            accept="image/*,.heic,.heif"
             multiple
             onChange={handleImageUpload}
             className="hidden"
           />
+
+          {/* AI Analyze Button - only shows when images exist */}
+          {images.length > 0 && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleAIAnalyze}
+              disabled={isAnalyzing || uploading}
+              className="mt-3 gap-2"
+            >
+              {isAnalyzing ? (
+                <>
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                  Analyzing...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-4 w-4" />
+                  AI Analyze
+                </>
+              )}
+            </Button>
+          )}
         </div>
 
         {/* Basic Info */}
