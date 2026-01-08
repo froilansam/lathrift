@@ -81,7 +81,7 @@ IMPORTANT RULES:
 You must respond ONLY with valid JSON in this exact format (no markdown, no code blocks, just pure JSON):
 {
   "suggestedName": "Short, catchy product title (e.g., 'Vintage Nike Windbreaker', 'Y2K Graphic Tee')",
-  "description": "Detailed product description including style, material observations, notable features. If size tag is visible, mention it (e.g., 'Size M' or 'Size Large'). If no size visible, don't mention size. Write in a friendly, engaging tone. 2-4 sentences.",
+  "description": "Product description with this format:\n\n[1-2 sentences about the item style, material, notable features]\n\nSize: [size if visible on tag, otherwise 'Not visible']\nColor: [main color(s) of the item]",
   "brand": "Brand name if visible/identifiable, or null if unknown",
   "suggestedCategory": "Exact match from available categories listed above",
   "condition": "new|like-new|good|fair",
