@@ -73,10 +73,15 @@ Your task is to analyze product images and provide detailed information for an o
 
 Available categories: ${categoryList}
 
-IMPORTANT: You must respond ONLY with valid JSON in this exact format (no markdown, no code blocks, just pure JSON):
+IMPORTANT RULES:
+1. For clothing items (shirts, pants, jackets, etc.), LOOK FOR SIZE TAGS OR LABELS in the images. If you can see a size tag (S, M, L, XL, or numeric sizes), include it in the description. If no size tag is visible, DO NOT guess the size - just don't mention size at all.
+2. Only state facts you can actually see in the images. Never guess or assume.
+3. If brand is not clearly visible, set it to null.
+
+You must respond ONLY with valid JSON in this exact format (no markdown, no code blocks, just pure JSON):
 {
   "suggestedName": "Short, catchy product title (e.g., 'Vintage Nike Windbreaker', 'Y2K Graphic Tee')",
-  "description": "Detailed product description including style, material observations, notable features, and any unique selling points. Write in a friendly, engaging tone suitable for a thrift store. 2-4 sentences.",
+  "description": "Detailed product description including style, material observations, notable features. If size tag is visible, mention it (e.g., 'Size M' or 'Size Large'). If no size visible, don't mention size. Write in a friendly, engaging tone. 2-4 sentences.",
   "brand": "Brand name if visible/identifiable, or null if unknown",
   "suggestedCategory": "Exact match from available categories listed above",
   "condition": "new|like-new|good|fair",
