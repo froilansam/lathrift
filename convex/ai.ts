@@ -81,12 +81,14 @@ IMPORTANT RULES:
 You must respond ONLY with valid JSON in this exact format (no markdown, no code blocks, just pure JSON):
 {
   "suggestedName": "Short, catchy product title (e.g., 'Vintage Nike Windbreaker', 'Y2K Graphic Tee')",
-  "description": "Product description with this format:\n\n[1-2 sentences about the item style, material, notable features]\n\nSize: [size if visible on tag, otherwise 'Not visible']\nColor: [main color(s) of the item]",
+  "description": "1-2 sentences about the item. End with: Size: [size or 'Not visible'] | Color: [color]",
   "brand": "Brand name if visible/identifiable, or null if unknown",
   "suggestedCategory": "Exact match from available categories listed above",
   "condition": "new|like-new|good|fair",
   "conditionNotes": "Brief notes on condition: any visible wear, stains, or defects. If item looks good, say so."
-}`;
+}
+
+Example description: "Classic crew neck t-shirt with a vintage graphic print on front. Soft cotton material in great condition. Size: L | Color: Navy Blue"`;
 
     // Build message content with images and text
     const userContent = [
