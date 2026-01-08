@@ -209,12 +209,12 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-4xl px-4 py-6 sm:py-8 sm:px-6 lg:px-8">
       {/* Back Link */}
       {step === "info" && (
         <Link
           href="/shop"
-          className="inline-flex items-center text-sm text-muted hover:text-foreground transition-colors mb-8"
+          className="inline-flex items-center text-sm text-muted hover:text-foreground transition-colors mb-6 sm:mb-8"
         >
           <ChevronLeft className="h-4 w-4 mr-1" />
           Continue Shopping
@@ -224,19 +224,19 @@ export default function CheckoutPage() {
       {step === "shipping" && (
         <button
           onClick={() => setStep("info")}
-          className="inline-flex items-center text-sm text-muted hover:text-foreground transition-colors mb-8"
+          className="inline-flex items-center text-sm text-muted hover:text-foreground transition-colors mb-6 sm:mb-8"
         >
           <ChevronLeft className="h-4 w-4 mr-1" />
           Back to Information
         </button>
       )}
 
-      <h1 className="text-2xl font-bold mb-8">
+      <h1 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8">
         {step === "info" && "Checkout"}
         {step === "shipping" && "Shipping & Payment"}
       </h1>
 
-      <div className="grid gap-8 lg:grid-cols-5">
+      <div className="grid gap-6 sm:gap-8 lg:grid-cols-5">
         {/* Main Content */}
         <div className="lg:col-span-3">
           {/* Step 1: Customer Info */}
@@ -246,8 +246,8 @@ export default function CheckoutPage() {
               animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
-              <div className="rounded-lg border border-border p-6 space-y-4">
-                <h2 className="font-medium">Contact Information</h2>
+              <div className="rounded-lg border border-border p-4 sm:p-6 space-y-4">
+                <h2 className="font-medium text-sm sm:text-base">Contact Information</h2>
                 <Input
                   label="Full Name"
                   value={formData.name}
@@ -281,8 +281,8 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              <div className="rounded-lg border border-border p-6 space-y-4">
-                <h2 className="font-medium">Shipping Address</h2>
+              <div className="rounded-lg border border-border p-4 sm:p-6 space-y-4">
+                <h2 className="font-medium text-sm sm:text-base">Shipping Address</h2>
                 <Input
                   label="Street Address"
                   value={formData.street}
@@ -323,8 +323,8 @@ export default function CheckoutPage() {
                 />
               </div>
 
-              <div className="rounded-lg border border-border p-6">
-                <h2 className="font-medium mb-4">Order Notes (Optional)</h2>
+              <div className="rounded-lg border border-border p-4 sm:p-6">
+                <h2 className="font-medium text-sm sm:text-base mb-4">Order Notes (Optional)</h2>
                 <textarea
                   value={formData.notes}
                   onChange={(e) =>

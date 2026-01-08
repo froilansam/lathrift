@@ -46,11 +46,11 @@ function ShopContent() {
     : undefined;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:py-8 sm:px-6 lg:px-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6 sm:mb-8">
         <div>
-          <h1 className="text-2xl font-bold">
+          <h1 className="text-xl sm:text-2xl font-bold">
             {featuredOnly
               ? "Featured"
               : selectedCategory
@@ -58,7 +58,7 @@ function ShopContent() {
                 : "All Products"}
           </h1>
           {sortedProducts && (
-            <p className="text-sm text-muted mt-1">
+            <p className="text-xs sm:text-sm text-muted mt-1">
               {sortedProducts.length}{" "}
               {sortedProducts.length === 1 ? "item" : "items"}
             </p>

@@ -105,14 +105,14 @@ export default function ProductsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Products</h1>
-          <p className="text-muted">
+          <h1 className="text-xl sm:text-2xl font-bold">Products</h1>
+          <p className="text-sm text-muted">
             {filteredProducts?.length ?? 0} product(s)
           </p>
         </div>
-        <Button onClick={() => setShowForm(true)}>
+        <Button onClick={() => setShowForm(true)} className="w-full sm:w-auto">
           <Plus className="h-4 w-4 mr-2" />
           Add Product
         </Button>
@@ -129,30 +129,137 @@ export default function ProductsPage() {
         />
       </div>
 
-      {/* Products Table */}
-      <div className="rounded-lg border border-border bg-background">
-        <div className="overflow-x-auto min-h-[400px]">
+      {/* Products - Mobile Cards */}
+      <div className="space-y-3 md:hidden">
+        {filteredProducts === undefined ? (
+          [...Array(5)].map((_, i) => (
+            <div key={i} className="h-24 animate-pulse rounded-lg bg-secondary" />
+          ))
+        ) : filteredProducts.length === 0 ? (
+          <div className="rounded-lg border border-border p-12 text-center text-muted">
+            No products found
+          </div>
+        ) : (
+          filteredProducts.map((product) => (
+            <div
+              key={product._id}
+              className="rounded-lg border border-border bg-background p-4"
+            >
+              <div className="flex gap-3">
+                <div className="relative h-16 w-16 shrink-0 rounded-lg bg-secondary overflow-hidden">
+                  {product.images?.[0] && product.images[0].startsWith("http") ? (
+                    <Image
+                      src={product.images[0]}
+                      alt={product.name}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : null}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">{product.name}</p>
+                      <p className="text-sm text-muted truncate">
+                        {product.brand && `${product.brand} • `}
+                        {getCategoryName(product.categoryId)}
+                      </p>
+                    </div>
+                    <div className="relative shrink-0">
+                      <button
+                        onClick={() =>
+                          setMenuOpen(menuOpen === product._id ? null : product._id)
+                        }
+                        className="rounded-lg p-1.5 hover:bg-secondary"
+                      >
+                        <MoreVertical className="h-4 w-4" />
+                      </button>
+                      {menuOpen === product._id && (
+                        <>
+                          <div
+                            className="fixed inset-0 z-10"
+                            onClick={() => setMenuOpen(null)}
+                          />
+                          <div className="absolute right-0 top-full z-20 mt-1 w-48 rounded-lg border border-border bg-background shadow-lg py-1">
+                            <button
+                              onClick={() => handleEdit(product._id)}
+                              className="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-secondary"
+                            >
+                              <Edit className="h-4 w-4" />
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleToggleFeatured(product._id)}
+                              className="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-secondary"
+                            >
+                              {product.featured ? (
+                                <>
+                                  <StarOff className="h-4 w-4" />
+                                  Unfeature
+                                </>
+                              ) : (
+                                <>
+                                  <Star className="h-4 w-4" />
+                                  Feature
+                                </>
+                              )}
+                            </button>
+                            <button
+                              onClick={() => handleToggleHidden(product._id, product.status)}
+                              className="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-secondary"
+                            >
+                              {product.status === "hidden" ? (
+                                <>
+                                  <Eye className="h-4 w-4" />
+                                  Show
+                                </>
+                              ) : (
+                                <>
+                                  <EyeOff className="h-4 w-4" />
+                                  Hide
+                                </>
+                              )}
+                            </button>
+                            <hr className="my-1 border-border" />
+                            <button
+                              onClick={() => handleDelete(product._id)}
+                              className="flex w-full items-center gap-2 px-4 py-2 text-sm text-destructive hover:bg-secondary"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              Delete
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 mt-2">
+                    <span className="font-bold text-accent">{formatPrice(product.price)}</span>
+                    <StatusBadge status={product.status} />
+                    {product.featured && <Star className="h-3 w-3 text-accent fill-accent" />}
+                    <span className="text-xs text-muted">
+                      {product.type === "unique" ? "Unique" : `${product.quantity} pcs`}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Products Table - Desktop */}
+      <div className="hidden md:block rounded-lg border border-border bg-background">
+        <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-secondary/50">
               <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium">
-                  Product
-                </th>
-                <th className="px-4 py-3 text-left text-sm font-medium">
-                  Category
-                </th>
-                <th className="px-4 py-3 text-left text-sm font-medium">
-                  Price
-                </th>
-                <th className="px-4 py-3 text-left text-sm font-medium">
-                  Stock
-                </th>
-                <th className="px-4 py-3 text-left text-sm font-medium">
-                  Status
-                </th>
-                <th className="px-4 py-3 text-right text-sm font-medium">
-                  Actions
-                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium">Product</th>
+                <th className="px-4 py-3 text-left text-sm font-medium">Category</th>
+                <th className="px-4 py-3 text-left text-sm font-medium">Price</th>
+                <th className="px-4 py-3 text-left text-sm font-medium">Stock</th>
+                <th className="px-4 py-3 text-left text-sm font-medium">Status</th>
+                <th className="px-4 py-3 text-right text-sm font-medium">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -166,10 +273,7 @@ export default function ProductsPage() {
                 ))
               ) : filteredProducts.length === 0 ? (
                 <tr>
-                  <td
-                    colSpan={6}
-                    className="px-4 py-12 text-center text-muted"
-                  >
+                  <td colSpan={6} className="px-4 py-12 text-center text-muted">
                     No products found
                   </td>
                 </tr>
@@ -189,14 +293,10 @@ export default function ProductsPage() {
                           ) : null}
                         </div>
                         <div>
-                          <p className="font-medium line-clamp-1">
-                            {product.name}
-                          </p>
+                          <p className="font-medium line-clamp-1">{product.name}</p>
                           <div className="flex items-center gap-2">
                             {product.brand && (
-                              <span className="text-xs text-muted">
-                                {product.brand}
-                              </span>
+                              <span className="text-xs text-muted">{product.brand}</span>
                             )}
                             {product.featured && (
                               <Star className="h-3 w-3 text-accent fill-accent" />
@@ -205,12 +305,8 @@ export default function ProductsPage() {
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm">
-                      {getCategoryName(product.categoryId)}
-                    </td>
-                    <td className="px-4 py-3 text-sm font-medium">
-                      {formatPrice(product.price)}
-                    </td>
+                    <td className="px-4 py-3 text-sm">{getCategoryName(product.categoryId)}</td>
+                    <td className="px-4 py-3 text-sm font-medium">{formatPrice(product.price)}</td>
                     <td className="px-4 py-3 text-sm">
                       {product.type === "unique" ? (
                         <span className="text-muted">Unique</span>
@@ -225,15 +321,12 @@ export default function ProductsPage() {
                       <div className="relative flex justify-end">
                         <button
                           onClick={() =>
-                            setMenuOpen(
-                              menuOpen === product._id ? null : product._id
-                            )
+                            setMenuOpen(menuOpen === product._id ? null : product._id)
                           }
                           className="rounded-lg p-2 hover:bg-secondary"
                         >
                           <MoreVertical className="h-4 w-4" />
                         </button>
-
                         {menuOpen === product._id && (
                           <>
                             <div
@@ -249,9 +342,7 @@ export default function ProductsPage() {
                                 Edit
                               </button>
                               <button
-                                onClick={() =>
-                                  handleToggleFeatured(product._id)
-                                }
+                                onClick={() => handleToggleFeatured(product._id)}
                                 className="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-secondary"
                               >
                                 {product.featured ? (
@@ -267,12 +358,7 @@ export default function ProductsPage() {
                                 )}
                               </button>
                               <button
-                                onClick={() =>
-                                  handleToggleHidden(
-                                    product._id,
-                                    product.status
-                                  )
-                                }
+                                onClick={() => handleToggleHidden(product._id, product.status)}
                                 className="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-secondary"
                               >
                                 {product.status === "hidden" ? (

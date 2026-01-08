@@ -89,9 +89,9 @@ export default function ProductPage({
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:py-8 sm:px-6 lg:px-8">
       {/* Breadcrumb */}
-      <nav className="mb-8">
+      <nav className="mb-6 sm:mb-8">
         <Link
           href="/shop"
           className="inline-flex items-center text-sm text-muted hover:text-foreground transition-colors"
@@ -101,7 +101,7 @@ export default function ProductPage({
         </Link>
       </nav>
 
-      <div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
+      <div className="grid gap-6 sm:gap-8 lg:grid-cols-2 lg:gap-16">
         {/* Images */}
         <div className="space-y-4">
           {/* Main Image */}
@@ -171,8 +171,8 @@ export default function ProductPage({
 
           {/* Title & Price */}
           <div>
-            <h1 className="text-2xl font-bold sm:text-3xl">{product.name}</h1>
-            <p className="mt-2 text-3xl font-bold text-accent">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">{product.name}</h1>
+            <p className="mt-2 text-2xl sm:text-3xl font-bold text-accent">
               {formatPrice(product.price)}
             </p>
           </div>

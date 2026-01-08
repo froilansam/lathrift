@@ -94,12 +94,12 @@ export default function OrdersPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Orders</h1>
-        <p className="text-muted">{orders?.length ?? 0} order(s)</p>
+        <h1 className="text-xl sm:text-2xl font-bold">Orders</h1>
+        <p className="text-sm text-muted">{orders?.length ?? 0} order(s)</p>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 -mx-4 px-4 pb-2 overflow-x-auto scrollbar-hide sm:mx-0 sm:px-0">
         <button
           onClick={() => setFilterStatus("all")}
           className={`px-3 py-1.5 text-sm rounded-full transition-colors ${
@@ -223,23 +223,23 @@ function OrderCard({
       {/* Header */}
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between p-4 hover:bg-secondary/50 transition-colors"
+        className="w-full flex items-center justify-between gap-3 p-4 hover:bg-secondary/50 transition-colors"
       >
-        <div className="flex items-center gap-4">
-          <div className="text-left">
-            <p className="font-medium">
-              Order #{order._id.slice(-8).toUpperCase()}
-            </p>
-            <p className="text-sm text-muted">
-              {formatDateTime(order.createdAt)}
-            </p>
-          </div>
+        <div className="text-left min-w-0">
+          <p className="font-medium text-sm sm:text-base">
+            Order #{order._id.slice(-8).toUpperCase()}
+          </p>
+          <p className="text-xs sm:text-sm text-muted">
+            {formatDateTime(order.createdAt)}
+          </p>
         </div>
-        <div className="flex items-center gap-4">
-          <Badge variant={variants[order.status]}>
-            {STATUS_LABELS[order.status]}
-          </Badge>
-          <p className="font-bold">{formatPrice(order.total)}</p>
+        <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+          <div className="text-right">
+            <p className="font-bold text-sm sm:text-base">{formatPrice(order.total)}</p>
+            <Badge variant={variants[order.status]} className="text-xs">
+              {STATUS_LABELS[order.status]}
+            </Badge>
+          </div>
           <ChevronDown
             className={`h-5 w-5 transition-transform ${
               isExpanded ? "rotate-180" : ""
