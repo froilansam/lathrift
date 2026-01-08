@@ -13,45 +13,6 @@ interface AIAnalysisResult {
   conditionNotes: string;
 }
 
-// Convert bytes to base64 (no Buffer in Convex runtime)
-function bytesToBase64(bytes: Uint8Array): string {
-  const chars =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-  let result = "";
-  const len = bytes.length;
-
-  for (let i = 0; i < len; i += 3) {
-    const b1 = bytes[i];
-    const b2 = i + 1 < len ? bytes[i + 1] : 0;
-    const b3 = i + 2 < len ? bytes[i + 2] : 0;
-
-    result += chars[b1 >> 2];
-    result += chars[((b1 & 3) << 4) | (b2 >> 4)];
-    result += i + 1 < len ? chars[((b2 & 15) << 2) | (b3 >> 6)] : "=";
-    result += i + 2 < len ? chars[b3 & 63] : "=";
-  }
-
-  return result;
-}
-
-// Fetch image and convert to base64
-async function imageUrlToBase64(
-  url: string
-): Promise<{ base64: string; mediaType: string }> {
-  const response = await fetch(url);
-  if (!response.ok) throw new Error(`Failed to fetch image: ${url}`);
-
-  const arrayBuffer = await response.arrayBuffer();
-  const bytes = new Uint8Array(arrayBuffer);
-  const base64 = bytesToBase64(bytes);
-
-  // Get media type from Content-Type header
-  const contentType = response.headers.get("content-type") || "image/jpeg";
-  const mediaType = contentType.split(";")[0].trim();
-
-  return { base64, mediaType };
-}
-
 // Analyze product images using Claude Vision
 export const analyzeProductImages = action({
   args: {
@@ -76,8 +37,8 @@ export const analyzeProductImages = action({
       throw new Error("At least one image is required for analysis");
     }
 
-    // Limit to first 4 images for API efficiency
-    const imageIds = args.storageIds.slice(0, 4);
+    // Limit to first 2 images for efficiency
+    const imageIds = args.storageIds.slice(0, 2);
 
     // Get URLs for storage IDs
     const imageUrls: string[] = [];
@@ -94,20 +55,14 @@ export const analyzeProductImages = action({
       throw new Error("Could not resolve any image URLs");
     }
 
-    // Convert images to base64 for Claude API
-    const imageContents = await Promise.all(
-      imageUrls.map(async (url) => {
-        const { base64, mediaType } = await imageUrlToBase64(url);
-        return {
-          type: "image" as const,
-          source: {
-            type: "base64" as const,
-            media_type: mediaType,
-            data: base64,
-          },
-        };
-      })
-    );
+    // Use URL-based image source (more memory efficient than base64)
+    const imageContents = imageUrls.map((url) => ({
+      type: "image" as const,
+      source: {
+        type: "url" as const,
+        url: url,
+      },
+    }));
 
     // Build category list for the prompt
     const categoryList = args.existingCategories.map((c) => c.name).join(", ");
