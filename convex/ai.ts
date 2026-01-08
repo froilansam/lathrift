@@ -81,7 +81,7 @@ IMPORTANT RULES:
 You must respond ONLY with valid JSON in this exact format (no markdown, no code blocks, just pure JSON):
 {
   "suggestedName": "Short, catchy product title (e.g., 'Vintage Nike Windbreaker', 'Y2K Graphic Tee')",
-  "description": "1-2 sentences about the item. End with: Size: [size or 'Not visible'] | Color: [color]",
+  "description": "Detailed product description including style, material observations, notable features. End with: Size: [size or 'Not visible'] | Color: [color]",
   "brand": "Brand name if visible/identifiable, or null if unknown",
   "suggestedCategory": "Exact match from available categories listed above",
   "condition": "new|like-new|good|fair",
@@ -165,9 +165,7 @@ Example description: "Classic crew neck t-shirt with a vintage graphic print on 
     } catch (error) {
       console.error("AI analysis error:", error);
       if (error instanceof SyntaxError) {
-        throw new Error(
-          "Failed to parse AI response. Please try again."
-        );
+        throw new Error("Failed to parse AI response. Please try again.");
       }
       throw error instanceof Error
         ? error
