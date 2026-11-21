@@ -65,7 +65,7 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="https://www.instagram.com/l.athrift"
+                  href="https://www.instagram.com/la.thrifttttt"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-accent transition-colors flex items-center gap-2"

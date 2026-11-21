@@ -110,7 +110,7 @@ function getEmailContent(
                   </p>
                   <p style="margin: 0 0 16px 0; color: ${COLORS.light}; font-size: 12px;">Follow us for new drops</p>
                   <p style="margin: 0 0 30px 0;">
-                    <a href="https://instagram.com/l.athrift" style="color: ${COLORS.muted}; text-decoration: none; font-size: 13px; margin: 0 12px;">Instagram</a>
+                    <a href="https://instagram.com/la.thrifttttt" style="color: ${COLORS.muted}; text-decoration: none; font-size: 13px; margin: 0 12px;">Instagram</a>
                     <a href="https://facebook.com/l.athrift" style="color: ${COLORS.muted}; text-decoration: none; font-size: 13px; margin: 0 12px;">Facebook</a>
                   </p>
                   <p style="margin: 0; color: ${COLORS.light}; font-size: 12px;">Questions? Reply to this email or DM us on socials.</p>
