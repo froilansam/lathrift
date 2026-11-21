@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/logo.png" width="120" alt="LA Thrift logo" />
+<img src=".github/brand.png" width="240" alt="LA Thrift, est. 2020" />
 
 # LA Thrift
 
