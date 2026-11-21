@@ -15,7 +15,7 @@
 
 [![TikTok](https://img.shields.io/badge/TikTok-@l.athrift-000?style=for-the-badge&logo=tiktok&logoColor=white)](https://www.tiktok.com/@l.athrift)
 [![Instagram](https://img.shields.io/badge/Instagram-la.thrifttttt-e4405f?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/la.thrifttttt)
-[![Facebook](https://img.shields.io/badge/Facebook-l.athrift-1877f2?style=for-the-badge&logo=facebook&logoColor=white)](https://www.facebook.com/l.athrift)
+[![Facebook](https://img.shields.io/badge/Facebook-l.athriftt-1877f2?style=for-the-badge&logo=facebook&logoColor=white)](https://www.facebook.com/l.athriftt)
 
 </div>
 
@@ -112,5 +112,5 @@ hooks/useCart.tsx   cart state
 ---
 
 <div align="center">
-<sub>Built for <b>LA Thrift</b> · Follow the drops on <a href="https://www.tiktok.com/@l.athrift">TikTok</a>, <a href="https://www.instagram.com/la.thrifttttt">Instagram</a> and <a href="https://www.facebook.com/l.athrift">Facebook</a></sub>
+<sub>Built for <b>LA Thrift</b> · Follow the drops on <a href="https://www.tiktok.com/@l.athrift">TikTok</a>, <a href="https://www.instagram.com/la.thrifttttt">Instagram</a> and <a href="https://www.facebook.com/l.athriftt">Facebook</a></sub>
 </div>

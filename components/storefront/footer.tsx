@@ -76,7 +76,7 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="https://www.facebook.com/l.athrift"
+                  href="https://www.facebook.com/l.athriftt"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-accent transition-colors flex items-center gap-2"
